@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "senior-architect-rag": {
+      "command": "C:/Senior-Architect-RAG/senior-architect-rag.exe",
+      "args": [],
+      "env": {}
+    }
+  }
+}

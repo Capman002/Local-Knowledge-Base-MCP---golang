@@ -1,0 +1,35 @@
+# Binários compilados
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Arquivos de ambiente (contêm API keys)
+.env
+
+# Banco vetorial (dados locais)
+vector_db/
+
+# PDFs ( opcional - muito grandes para Git)
+# biblioteca_docs/*.pdf
+
+# Go
+*.test
+*.out
+go.work
+go.work.sum
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
