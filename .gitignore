@@ -12,7 +12,7 @@
 vector_db/
 
 # PDFs ( opcional - muito grandes para Git)
-# biblioteca_docs/*.pdf
+biblioteca_docs/*.pdf
 
 # Go
 *.test
