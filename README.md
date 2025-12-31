@@ -1,174 +1,120 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Go-1.22+-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Go Version"/>
   <img src="https://img.shields.io/badge/MCP-Protocol-8B5CF6?style=for-the-badge&logo=anthropic&logoColor=white" alt="MCP Protocol"/>
-  <img src="https://img.shields.io/badge/Google_AI-Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google AI"/>
+  <img src="https://img.shields.io/badge/Google_AI-Embeddings-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google AI"/>
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License"/>
 </p>
 
 <h1 align="center">🏗️ Senior Architect RAG</h1>
 
 <p align="center">
-  <strong>Zero-Dependency MCP Server for Software Architecture Knowledge Base</strong>
+  <strong>Zero-Dependency MCP Server for Local Knowledge Base</strong>
 </p>
 
 <p align="center">
-  A powerful RAG (Retrieval-Augmented Generation) server that provides semantic search over your software architecture literature collection. Built with Go, leveraging Google AI embeddings and an embedded vector database for zero external dependencies.
+  Um servidor MCP que permite que assistentes de IA consultem sua base de conhecimento local via busca semântica (RAG). Indexe seus PDFs e faça perguntas em linguagem natural.
 </p>
 
 ---
 
-## ✨ Highlights
+## ✨ Características
 
-<table>
-<tr>
-<td width="50%">
-
-### 🚀 Zero Dependencies
-
-- ❌ No Docker required
-- ❌ No ChromaDB/Pinecone/Weaviate
-- ❌ No Ollama or local LLMs
-- ❌ No background services
-
-</td>
-<td width="50%">
-
-### ⚡ Instant Startup
-
-- Single binary execution
-- ~50MB RAM footprint
-- Embedded vector database
-- Production-ready out of the box
-
-</td>
-</tr>
-</table>
+- **Zero Dependências Externas** - Sem Docker, sem servidores externos, sem Python
+- **Banco Vetorial Embutido** - chromem-go persiste localmente
+- **Embeddings via Google AI** - Modelo `text-embedding-004` (768 dimensões)
+- **Protocolo MCP** - Compatível com Claude Desktop, Antigravity, e outros clientes MCP
+- **Comunicação Stdio** - Sem portas HTTP expostas
 
 ---
 
-## 🏛️ Architecture
+## 🏛️ Arquitetura
 
 ```
 ┌─────────────────────┐      JSON-RPC (stdio)      ┌──────────────────────────────────────────┐
 │                     │◄──────────────────────────►│                                          │
 │   Claude Desktop    │                            │     Senior Architect RAG (Go Binary)     │
-│   Gemini Code       │                            │  ┌──────────────┐    ┌────────────────┐  │
-│   Any MCP Client    │                            │  │  chromem-go  │    │   Google AI    │  │
+│   Antigravity       │                            │  ┌──────────────┐    ┌────────────────┐  │
+│   Outro MCP Client  │                            │  │  chromem-go  │    │   Google AI    │  │
 │                     │                            │  │  (VectorDB)  │    │  (Embeddings)  │  │
 └─────────────────────┘                            │  └──────────────┘    └────────────────┘  │
                                                    └──────────────────────────────────────────┘
 ```
 
-**Tech Stack:**
+---
 
-- **Language:** Go 1.22+
-- **Embeddings:** Google AI `text-embedding-004` (768 dimensions)
-- **Vector Store:** [chromem-go](https://github.com/philippgille/chromem-go) (embedded)
-- **Protocol:** [MCP (Model Context Protocol)](https://modelcontextprotocol.io/)
-- **PDF Parser:** [ledongthuc/pdf](https://github.com/ledongthuc/pdf)
+## 🛠️ Tools Disponíveis
+
+### `consultar_base_conhecimento`
+
+Consulta a base de conhecimento via busca semântica.
+
+| Parâmetro  | Tipo   | Obrigatório | Descrição                                        |
+| ---------- | ------ | ----------- | ------------------------------------------------ |
+| `pergunta` | string | ✅          | A questão técnica ou padrão que deseja pesquisar |
+
+**Retorna:** Os 5 fragmentos mais relevantes com score de similaridade, fonte e conteúdo.
 
 ---
 
-## 🛠️ Available Tools
+### `verificar_status_vectordb`
 
-The MCP server exposes the following tools to AI assistants:
+Verifica o status do banco vetorial.
 
-| Tool                          | Description                                                                                                                 |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `consultar_base_conhecimento` | Semantic search over the knowledge base. Returns the top 5 most relevant document fragments for a given technical question. |
-| `verificar_status_vectordb`   | Health check for the vector database. Returns document count and memory usage.                                              |
+| Parâmetro  | Tipo | Obrigatório | Descrição             |
+| ---------- | ---- | ----------- | --------------------- |
+| _(nenhum)_ | -    | -           | Não requer parâmetros |
 
-### Example Usage
-
-```
-User: "Explique o padrão CQRS e quando usar"
-
-AI uses: consultar_base_conhecimento("CQRS padrão quando usar")
-
-Returns: Relevant fragments from DDD, System Design, and Microservices books
-```
+**Retorna:** Status do banco, contagem de documentos indexados e uso de memória.
 
 ---
 
-## 📚 Supported Literature
+## 🚀 Instalação
 
-This RAG system is designed to index software architecture books and technical PDFs:
+### Pré-requisitos
 
-| Category           | Example Books                                               |
-| ------------------ | ----------------------------------------------------------- |
-| **System Design**  | System Design Interview Vol. 1 & 2 (Alex Xu)                |
-| **DDD**            | Implementing Domain-Driven Design (Vaughn Vernon)           |
-| **Go Programming** | The Go Programming Language, Learning Go, Concurrency in Go |
-| **Microservices**  | Building Microservices (Sam Newman)                         |
-| **Software Craft** | The Pragmatic Programmer, Clean Code principles             |
-| **Resilience**     | Chaos Engineering: System Resiliency in Practice            |
+- **Go 1.22+** (para compilar)
+- **Google AI API Key** - [Obter gratuitamente](https://aistudio.google.com/app/apikey)
 
----
+### Compilar
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Go 1.22+** (only for building)
-- **Google AI API Key** ([Get one here](https://aistudio.google.com/app/apikey))
-
-### 1. Clone & Build
-
-```powershell
-# Clone the repository
+```bash
 git clone https://github.com/Capman002/Local-Knowledge-Base-MCP---golang.git
 cd Local-Knowledge-Base-MCP---golang
 
-# Build binaries
 go build -o senior-architect-rag.exe .
 go build -o ingest.exe ./cmd/ingest
 ```
 
-### 2. Configure Environment
+### Configurar
 
-Create a `.env` file:
+Crie um arquivo `.env` na raiz do projeto:
 
 ```env
-# Required - Google AI Studio API Key
-GOOGLE_API_KEY=your-api-key-here
+# Obrigatório
+GOOGLE_API_KEY=sua-api-key-aqui
 
-# Optional - Customize these if needed
+# Opcional (valores padrão mostrados)
 EMBEDDING_MODEL=text-embedding-004
 COLLECTION_NAME=biblioteca_arquitetura
 DB_PATH=vector_db
 ```
 
-### 3. Index Your Documents
+### Indexar Documentos
 
-Place your PDF books in the `biblioteca_docs/` folder, then run:
+1. Coloque seus PDFs na pasta `biblioteca_docs/`
+2. Execute o ingestor:
 
-```powershell
-.\ingest.exe
+```bash
+./ingest.exe
 ```
 
-**Output:**
+---
 
-```
-╔════════════════════════════════════════════════════════════╗
-║  📚 Ingestor de Documentos                                 ║
-╚════════════════════════════════════════════════════════════╝
+## ⚙️ Configuração MCP
 
-📁 biblioteca_docs | 🧠 text-embedding-004
-🔑 API Key: ****xxxx
-📚 18 PDFs encontrados
+### Claude Desktop / Antigravity
 
-📖 System Design Interview.pdf... 342 chunks ✅ 342 indexados
-📖 Implementing DDD.pdf... 856 chunks ✅ 856 indexados
-...
-
-✅ Concluído: 18 arquivos, 4521 chunks, 4521 total no banco
-```
-
-### 4. Configure Your MCP Client
-
-#### Claude Desktop / Antigravity
-
-Add to your MCP configuration file:
+Adicione ao arquivo de configuração:
 
 **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`  
 **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
@@ -177,7 +123,7 @@ Add to your MCP configuration file:
 {
   "mcpServers": {
     "senior-architect-rag": {
-      "command": "C:/Senior-Architect-RAG/senior-architect-rag.exe",
+      "command": "C:/caminho/para/senior-architect-rag.exe",
       "args": [],
       "env": {}
     }
@@ -185,120 +131,85 @@ Add to your MCP configuration file:
 }
 ```
 
-> 💡 The `.env` file is automatically loaded from the executable's directory.
-
 ---
 
-## 📁 Project Structure
+## 📁 Estrutura do Projeto
 
 ```
 Senior-Architect-RAG/
-├── main.go                      # MCP Server (handles tool calls)
-├── cmd/
-│   └── ingest/
-│       └── main.go              # PDF Ingestor (chunking + embedding)
-├── biblioteca_docs/             # Your PDF collection (git-ignored)
-├── vector_db/                   # Persistent vector store (auto-created)
-├── senior-architect-rag.exe     # Built MCP server binary
-├── ingest.exe                   # Built ingestor binary
-├── .env                         # Your API key (git-ignored)
-├── .env.example                 # Template for environment variables
-├── claude_config_example.json   # Example MCP client configuration
-└── README.md
+├── main.go                      # Servidor MCP
+├── cmd/ingest/main.go           # Ingestor de PDFs
+├── biblioteca_docs/             # Seus PDFs (git-ignored)
+├── vector_db/                   # Banco vetorial (auto-criado)
+├── .env                         # Configurações (git-ignored)
+├── .env.example                 # Template de configuração
+└── claude_config_example.json   # Exemplo de config MCP
 ```
 
 ---
 
-## ⚙️ Configuration Options
+## 🔧 Variáveis de Ambiente
 
-| Variable          | Default                  | Description                                |
-| ----------------- | ------------------------ | ------------------------------------------ |
-| `GOOGLE_API_KEY`  | _(required)_             | Your Google AI Studio API key              |
-| `EMBEDDING_MODEL` | `text-embedding-004`     | Google embedding model to use              |
-| `COLLECTION_NAME` | `biblioteca_arquitetura` | Name of the vector collection              |
-| `DB_PATH`         | `vector_db`              | Path to store the vector database          |
-| `DOCS_DIR`        | `biblioteca_docs`        | Path to your PDF documents (ingestor only) |
-
----
-
-## 📊 Performance Comparison
-
-| Aspect           | Traditional RAG (Docker) | Senior Architect RAG |
-| ---------------- | ------------------------ | -------------------- |
-| **Dependencies** | Docker, ChromaDB, Python | None                 |
-| **Startup Time** | 10-30 seconds            | Instant              |
-| **RAM Usage**    | ~500MB+                  | ~50MB                |
-| **Disk Space**   | ~2GB (containers)        | ~20MB (binary + DB)  |
-| **Maintenance**  | Container updates        | Zero                 |
-| **Portability**  | Docker required          | Single binary        |
+| Variável          | Padrão                   | Descrição                            |
+| ----------------- | ------------------------ | ------------------------------------ |
+| `GOOGLE_API_KEY`  | _(obrigatório)_          | Chave da API Google AI Studio        |
+| `EMBEDDING_MODEL` | `text-embedding-004`     | Modelo de embeddings                 |
+| `COLLECTION_NAME` | `biblioteca_arquitetura` | Nome da collection no banco vetorial |
+| `DB_PATH`         | `vector_db`              | Caminho do banco vetorial            |
+| `DOCS_DIR`        | `biblioteca_docs`        | Caminho dos PDFs (apenas ingestor)   |
 
 ---
 
-## 🔧 How It Works
+## 🔍 Detalhes Técnicos
 
-### Ingestion Pipeline
-
-```
-PDF Files → Text Extraction → Chunking (800 chars, 150 overlap)
-         → Embedding (Google AI) → Vector Storage (chromem-go)
-```
-
-### Query Pipeline
-
-```
-User Question → Embedding (Google AI) → Semantic Search (Top 5)
-             → Return Fragments with Sources and Similarity Scores
-```
-
-### Chunking Strategy
-
-- **Chunk Size:** 800 characters
-- **Overlap:** 150 characters
-- **Batch Size:** 20 documents per API call
-- **Deduplication:** SHA-256 hash-based document IDs
+| Componente               | Implementação                      |
+| ------------------------ | ---------------------------------- |
+| **Linguagem**            | Go                                 |
+| **Versão**               | 3.0.0                              |
+| **Embeddings**           | Google AI `text-embedding-004`     |
+| **Banco Vetorial**       | chromem-go (embutido, persistente) |
+| **Chunk Size**           | 800 caracteres                     |
+| **Chunk Overlap**        | 150 caracteres                     |
+| **Resultados por Query** | Top 5                              |
+| **Protocolo**            | MCP via stdio                      |
 
 ---
 
-## 🐛 Troubleshooting
+## 🐛 Solução de Problemas
 
-### "Cannot extract text from PDF"
+### "GOOGLE_API_KEY não definida"
 
-Some PDFs are scanned images without embedded text. Use OCR tools (Adobe Acrobat, ABBYY FineReader) to convert them first.
+Certifique-se de que o arquivo `.env` existe no mesmo diretório do executável.
 
-### "API Key not found"
+### "Nenhum PDF encontrado"
 
-Ensure your `.env` file is in the same directory as the executable, or set `GOOGLE_API_KEY` as a system environment variable.
+Verifique se a pasta `biblioteca_docs/` existe e contém arquivos `.pdf`.
 
-### "Port already in use" (doesn't apply)
+### "Nenhum resultado para a consulta"
 
-This server uses **stdio** communication, not HTTP. No ports are opened.
+Execute `verificar_status_vectordb` para verificar se há documentos indexados. Se a contagem for zero, execute `ingest.exe`.
 
----
+### "Erro ao extrair texto do PDF"
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Alguns PDFs são imagens escaneadas sem texto embutido. Use ferramentas de OCR para convertê-los.
 
 ---
 
-## 📄 License
+## 🤝 Contribuindo
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Contribuições são bem-vindas! Veja [CONTRIBUTING.md](CONTRIBUTING.md) para detalhes.
 
 ---
 
-<p align="center">
-  <strong>Built with ❤️ for the Software Architecture Community</strong>
-</p>
+## 📄 Licença
 
-<p align="center">
-  <a href="https://github.com/Capman002/Local-Knowledge-Base-MCP---golang">
-    <img src="https://img.shields.io/github/stars/Capman002/Local-Knowledge-Base-MCP---golang?style=social" alt="GitHub Stars"/>
-  </a>
-</p>
+Este projeto está licenciado sob a Licença MIT - veja [LICENSE](LICENSE) para detalhes.
+
+---
+
+## 🔗 Dependências
+
+- [mark3labs/mcp-go](https://github.com/mark3labs/mcp-go) - Biblioteca MCP para Go
+- [philippgille/chromem-go](https://github.com/philippgille/chromem-go) - Banco vetorial embutido
+- [ledongthuc/pdf](https://github.com/ledongthuc/pdf) - Parser de PDF
+- [joho/godotenv](https://github.com/joho/godotenv) - Carregamento de .env
